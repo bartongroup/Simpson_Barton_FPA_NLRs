@@ -1,0 +1,38 @@
+# SAMPLE INFORMATION
+
+# format is treatment_vs_control
+comparison: 35SFPA_vs_col0
+
+
+# sample names which should be used to identify fastq files
+control_sample_names:
+  - col0_1
+  - col0_2
+  - col0_3
+  - col0_4
+
+treatment_sample_names:
+  - 35SFPA_1
+  - 35SFPA_2
+  - 35SFPA_3
+  - 35SFPA_4
+
+# ANNOTATION FILENAMES
+
+gtf_fn: ../../annotations/Araport11_GFF3_genes_transposons.201606.no_chr.gtf
+fasta_fn:  ../../annotations/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa
+
+# MAPPING PARAMETERS
+
+minimap2_parameters:
+  max_intron_size: 20000
+  annot_intron_bonus: 12
+
+
+# APA PARAMETERS:
+
+d3pendr_parameters:
+  min_read_overlap: 0.2
+  nboots: 999
+  use_gamma_model: True
+  test_homogeneity: False

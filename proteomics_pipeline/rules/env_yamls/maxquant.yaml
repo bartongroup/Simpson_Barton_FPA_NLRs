@@ -1,0 +1,6 @@
+name: maxquant
+channels:
+ - conda-forge
+ - bioconda
+dependencies:
+ - maxquant

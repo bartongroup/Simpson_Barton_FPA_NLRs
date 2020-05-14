@@ -1,0 +1,16 @@
+name: proteus
+channels:
+ - conda-forge
+ - bioconda
+ - mparker2
+dependencies:
+ - python=3.6
+ - r-base=3.5
+ - numpy
+ - pandas
+ - scipy
+ - statsmodels
+ - rpy2
+ - r-proteus
+ - r-imputelcmd
+ - click

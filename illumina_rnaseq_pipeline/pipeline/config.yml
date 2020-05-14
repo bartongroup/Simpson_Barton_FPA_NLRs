@@ -1,0 +1,13 @@
+# ANNOTATION FILENAMES
+
+gtf_fn: ../annotations/Araport11_GFF3_genes_transposons.201606.no_chr.gtf
+genome_fasta_fn:  ../annotations/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa
+transcriptome_fasta_fn: ../annotations/Araport11_genes.201606.cdna.fasta
+
+# DIFFERENTIAL EXPRESSION
+
+comparisons:
+  - fpa8_vs_col0
+  - 35SFPA_vs_col0
+  - fpa8_vs_FPAc
+  - 35SFPA_vs_FPAc

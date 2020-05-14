@@ -1,0 +1,21 @@
+configfile: 'config.yml'
+
+
+subworkflow basecalling:
+    workdir:
+        '../../nanopore_basecalling_pipeline/pipeline'
+    configfile:
+        '../../../nanopore_basecalling_pipeline/pipeline/config.yml'
+
+
+include: '../rules/mapping.snakefile'
+include: '../rules/apa.snakefile'
+
+
+rule all:
+    input:
+        'apa_results/{comp}.apa_results.bed'.format(comp=config['comparison']),
+        expand(
+            'aligned_data/pooled/{cond}.bam',
+            cond=config['comparison'].split('_vs_')
+        )

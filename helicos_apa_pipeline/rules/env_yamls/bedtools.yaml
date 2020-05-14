@@ -1,0 +1,10 @@
+name: bedtools
+channels:
+ - conda-forge
+ - bioconda
+dependencies:
+ - bedtools
+ - ucsc-bedgraphtobigwig
+ - ucsc-wigtobigwig
+ - ucsc-bigwigmerge
+ - ucsc-bedclip

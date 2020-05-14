@@ -1,0 +1,16 @@
+name: d3pendr
+channels:
+ - conda-forge
+ - bioconda
+dependencies:
+ - python=3.6
+ - numpy
+ - scipy
+ - pandas
+ - statsmodels
+ - click
+ - joblib
+ - pysam
+ - pybigwig
+ - pip:
+   - -e /cluster/ggs_lab/mtparker/papers/fpa_rpp7/nanopore_apa_pipeline/scripts/d3pendr

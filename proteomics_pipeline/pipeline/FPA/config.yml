@@ -1,0 +1,42 @@
+fasta_fn: ../../annotations/Araport11_genes.201606.pep.repr.fasta
+comparison: FPA_vs_col0
+nboots: 999
+
+sample_fns:
+  col0_3:
+    - raw_data/Col-1.raw
+    - raw_data/Col-2.raw
+    - raw_data/Col-3.raw
+    - raw_data/Col-4.raw
+    - raw_data/Col-5.raw
+  col0_2:
+    - raw_data/VZ1.raw
+    - raw_data/VZ2.raw
+    - raw_data/VZ3.raw
+    - raw_data/VZ4.raw
+    - raw_data/VZ5.raw
+  col0_1:
+    - raw_data/VZ-3.raw
+    - raw_data/VZ-5.raw
+    - raw_data/VZ-8.raw
+    - raw_data/VZ-11.raw
+    - raw_data/VZ-13.raw
+  FPA_3:
+    - raw_data/FPA-1.raw
+    - raw_data/FPA-2.raw
+    - raw_data/FPA-3.raw
+    - raw_data/FPA-4.raw
+    - raw_data/FPA-5.raw
+  FPA_2:
+    - raw_data/VZ11.raw
+    - raw_data/VZ12.raw
+    - raw_data/VZ13.raw
+    - raw_data/VZ14.raw
+    - raw_data/VZ15.raw
+  FPA_1:
+    - raw_data/VZ-2.raw
+    - raw_data/VZ-6.raw
+    - raw_data/VZ-9.raw
+    - raw_data/VZ-12.raw
+    - raw_data/VZ-15.raw
+

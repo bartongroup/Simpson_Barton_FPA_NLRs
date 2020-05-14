@@ -1,0 +1,20 @@
+configfile: 'config.yml'
+
+
+include: '../rules/qc.snakefile'
+include: '../rules/mapping.snakefile'
+include: '../rules/quantification.snakefile'
+include: '../rules/differential.snakefile'
+
+
+rule all:
+    input:
+        expand(
+            '{qc_type}/multiqc_report.html',
+            qc_type=['qc', 'aligned_data', 'quantification']
+        ),
+        expand(
+            'differential_expression/{de_method}/{comparison}.tsv',
+            de_method=['derfinder', 'edgeR'],
+            comparison=config['comparisons']
+        )

@@ -1,0 +1,18 @@
+import os
+from glob import glob
+
+configfile: 'config.yml'
+include: '../rules/basecalling.snakefile'
+
+
+INPUT_BASEDIRS = [fn for fn in glob('raw_data/*') if os.path.isdir(fn)]
+SAMPLE_NAMES = [os.path.split(fn)[1] for fn in INPUT_BASEDIRS]
+
+
+rule all:
+    input:
+        expand(
+            ['basecalled_data/{sample_name}.dna.fastq',
+             'sequencing_summaries/{sample_name}_sequencing_summary.txt'],
+            sample_name=SAMPLE_NAMES
+        )

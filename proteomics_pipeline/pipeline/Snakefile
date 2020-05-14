@@ -1,0 +1,6 @@
+configfile: 'config.yml'
+include: '../rules/maxquant.snakefile'
+
+rule all:
+    input:
+        'proteus_output/{comp}.tsv'.format(comp=config['comparison'])
