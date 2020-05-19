@@ -5,17 +5,29 @@ subworkflow basecalling:
     workdir:
         '../../nanopore_basecalling_pipeline/pipeline'
     configfile:
-        '../../../nanopore_basecalling_pipeline/pipeline/config.yml'
+        '../../nanopore_basecalling_pipeline/pipeline/config.yml'
 
 
 include: '../rules/mapping.snakefile'
 include: '../rules/apa.snakefile'
+include: '../rules/assembly.snakefile'
 
+def get_all_conds(comps):
+    all_conds = set()
+    for comp in comps:
+        treat, cntrl = comp.split('_vs_')
+        all_conds.add(treat)
+        all_conds.add(cntrl)
+    return all_conds
 
 rule all:
     input:
-        'apa_results/{comp}.apa_results.bed'.format(comp=config['comparison']),
+        expand(
+            'apa_results/{comp}.apa_results.bed',
+            comp=config['comparisons'],
+        ),
         expand(
             'aligned_data/pooled/{cond}.bam',
-            cond=config['comparison'].split('_vs_')
-        )
+            cond=get_all_conds(config['comparisons'])
+        ),
+        'assembly/merged_nanopore_assembly.gtf'

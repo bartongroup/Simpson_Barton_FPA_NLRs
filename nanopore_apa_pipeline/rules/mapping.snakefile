@@ -40,23 +40,24 @@ rule map_with_minimap2:
         '''
 
 
-def get_pool_input_bams(wildcards):
-    treat, cntrl = config['comparison'].split('_vs_')
-    if wildcards.cond == cntrl:
-        sample_names=config['control_sample_names']
-    elif wildcards.cond == treat:
-        sample_names=config['treatment_sample_names']
-    else:
-        raise ValueError()
+def sample_name_subset(cond):
+    sample_names = glob_wildcards(
+        basecalling('basecalled_data/{sample_name}.dna.fastq.gz')
+    ).sample_name
+    cond_sample_names = [sn for sn in sample_names if sn.startswith(cond)]
+    return cond_sample_names
+
+
+def pool_input(wildcards):
     return expand(
         'aligned_data/{sample_name}.filtered.bam',
-        sample_name=sample_names
+        sample_name=sample_name_subset(wildcards.cond)
     )
 
 
 rule pool_bams:
     input:
-        get_pool_input_bams
+        pool_input
     output:
         'aligned_data/pooled/{cond}.bam'
     threads: 12

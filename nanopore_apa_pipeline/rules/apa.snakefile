@@ -15,23 +15,37 @@ rule filter_spurious_tpe_from_oversplitting:
         '''
 
 
+def sample_name_subset(cond):
+    sample_names = glob_wildcards(
+        basecalling('basecalled_data/{sample_name}.dna.fastq')
+    ).sample_name
+    cond_sample_names = [sn for sn in sample_names if sn.startswith(cond)]
+    return cond_sample_names
+
+
+def d3pendr_input(wildcards):
+    return {
+        'cntrl_bams': expand(
+             'aligned_data/{sample_name}.filtered.bam',
+             sample_name=sample_name_subset(wildcards.cntrl)
+        ),
+        'treat_bams': expand(
+             'aligned_data/{sample_name}.filtered.bam',
+             sample_name=sample_name_subset(wildcards.treat)
+        )
+    }
+
+
 rule run_d3pendr:
     input:
-        cntrl_bams = expand(
-            'aligned_data/{sample_name}.filtered.bam',
-            sample_name=config['control_sample_names']
-        ),
-        treat_bams = expand(
-            'aligned_data/{sample_name}.filtered.bam',
-            sample_name=config['treatment_sample_names']
-        ),
+        unpack(d3pendr_input),
         gtf=config['gtf_fn'],
     output:
-        'apa_results/{comp}.apa_results.bed'
+        'apa_results/{treat}_vs_{cntrl}.apa_results.bed'
     params:
         cntrl_flag=lambda wc, input: ' '.join([f'-c {fn}' for fn in input.cntrl_bams]),
         treat_flag=lambda wc, input: ' '.join([f'-t {fn}' for fn in input.treat_bams]),
-        output_prefix=lambda wc: f'apa_results/{wc.comp}',
+        output_prefix=lambda wc: f'apa_results/{wc.treat}_vs_{wc.cntrl}',
         bootstraps=config['d3pendr_parameters'].get('nboots', 999),
         min_read_overlap=config['d3pendr_parameters'].get('min_read_overlap', 0.2),
         use_model='--use-gamma-model' if config['d3pendr_parameters'].get('use_gamma_model', True) \
