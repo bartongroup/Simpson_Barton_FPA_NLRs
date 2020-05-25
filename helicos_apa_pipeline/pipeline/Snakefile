@@ -1,9 +1,20 @@
 configfile: 'config.yml'
 
+
+subworkflow nanopore:
+    workdir:
+        '../../nanopore_apa_pipeline/pipeline'
+    configfile:
+        '../../nanopore_apa_pipeline/pipeline/config.yml'
+
+
 include: '../rules/data_cleaning.snakefile'
 include: '../rules/apa.snakefile'
 
 
 rule all:
     input:
-        'apa_results/{comp}.apa_results.bed'.format(comp=config['comparison'])
+        expand(
+            'apa_results/{comp}.apa_results.bed',
+            comp=config['comparisons']
+        )

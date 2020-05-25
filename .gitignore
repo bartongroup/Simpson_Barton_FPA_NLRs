@@ -28,6 +28,7 @@ sequencing_summaries/
 *.tsv
 *.xml
 *.xlsx
+*.svg
 
 # scripts
 minimap2/

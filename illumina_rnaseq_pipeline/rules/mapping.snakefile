@@ -106,3 +106,35 @@ rule genome_coverage:
         bedGraphToBigWig {output}.tmp.bdg <(cut -f-2 {params.genome}.fai) {output}
         rm {output}.tmp.bdg
         '''
+
+
+def sample_name_subset(cond):
+    sample_names = glob_wildcards(
+        'raw_data/{sample_name}.1.fastq.gz'
+    ).sample_name
+    cond_sample_names = [sn for sn in sample_names if sn.startswith(cond)]
+    return cond_sample_names
+
+
+rule normalised_genome_coverage:
+    input:
+        bams=lambda wc: expand(
+            'aligned_data/{sample_name}.sorted.{strand}.bam',
+            sample_name=sample_name_subset(wc.cond),
+            strand=wc.strand,
+        )
+    output:
+        bw='coverage_tracks/{cond}.cpm.{strand}.bw'
+    conda:
+        'env_yamls/deeptools.yaml'
+    threads: 12
+    shell:
+        '''
+        samtools merge -f -@ {threads} {output.bw}.tmp.bam {input.bams}
+        samtools index {output.bw}.tmp.bam
+        bamCoverage --normalizeUsing CPM -p {threads} \
+          --minMappingQuality 5 \
+          -b {output.bw}.tmp.bam \
+          -o {output.bw}
+        rm {output.bw}.tmp.bam
+        '''

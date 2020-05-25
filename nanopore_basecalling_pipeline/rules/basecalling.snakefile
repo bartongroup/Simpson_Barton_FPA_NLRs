@@ -19,9 +19,8 @@ checkpoint guppy_basecall:
     threads: 28
     shell:
         '''
-        ../../scripts/ont-guppy-cpu/bin/guppy_basecaller \
+        ../scripts/ont-guppy-cpu/bin/guppy_basecaller \
           --recursive \
-          --resume \
           --flowcell {params.flowcell} \
           --kit {params.kit} \
           --num_callers {threads} \

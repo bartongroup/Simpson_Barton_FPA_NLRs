@@ -38,7 +38,7 @@ def get_sample_ids(conds, reps):
 
 
 def get_design_matrix(conds, sample_ids):
-    dm = pd.get_dummies(conds)
+    dm = pd.get_dummies(conds, dtype='int64')
     dm.index = sample_ids
     dm = to_r_dataframe(dm)
     dm = robj.r['as.matrix'](dm)

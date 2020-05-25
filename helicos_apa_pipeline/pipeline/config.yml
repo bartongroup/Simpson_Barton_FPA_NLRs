@@ -1,0 +1,20 @@
+# SAMPLE INFORMATION
+
+# format is treatment_vs_control
+comparisons:
+ - fpa8_vs_col0
+ - 35SFPA_vs_col0
+
+# ANNOTATION FILENAMES
+
+gtf_fn: ../../annotations/Araport11_GFF3_genes_transposons.201606.no_chr.gtf
+dustmask_fn: ../../annotations/Arabidopsis_thaliana.TAIR10.dustmasker_level15.bed
+fasta_fn:  ../../annotations/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa
+
+# APA PARAMETERS:
+
+d3pendr_parameters:
+  min_read_overlap: 0.2
+  nboots: 999
+  use_gamma_model: True
+  test_homogeneity: True

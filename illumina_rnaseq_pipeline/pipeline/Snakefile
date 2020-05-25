@@ -1,6 +1,13 @@
 configfile: 'config.yml'
 
 
+subworkflow nanopore:
+    workdir:
+        '../../nanopore_apa_pipeline/pipeline'
+    configfile:
+        '../../nanopore_apa_pipeline/pipeline/config.yml'
+
+
 include: '../rules/qc.snakefile'
 include: '../rules/mapping.snakefile'
 include: '../rules/quantification.snakefile'
@@ -15,6 +22,11 @@ rule all:
         ),
         expand(
             'differential_expression/{de_method}/{comparison}.tsv',
-            de_method=['derfinder', 'edgeR'],
+            de_method=['dexseq', 'edgeR'],
             comparison=config['comparisons']
+        ),
+        expand(
+            'coverage_tracks/{sample_name}.cpm.{strand}.bw',
+            sample_name=glob_wildcards('raw_data/{sample_name}_{rep}.1.fastq.gz').sample_name,
+            strand=['fwd', 'rev']
         )

@@ -33,3 +33,52 @@ rule pseudoalign_with_salmon:
           -1 {input.read} -2 {input.mate} \
           -o {params.prefix}
         '''
+
+
+def sample_name_subset(cond):
+    sample_names = glob_wildcards(
+        'raw_data/{sample_name}.1.fastq.gz'
+    ).sample_name
+    cond_sample_names = [sn for sn in sample_names if sn.startswith(cond)]
+    return cond_sample_names
+
+
+def cntrl_vs_treat_names(wildcards, file_template, suffix=''):
+    return {
+        f'cntrl{suffix}': expand(
+             file_template, sample_name=sample_name_subset(wildcards.cntrl)
+        ),
+        f'treat{suffix}': expand(
+             file_template, sample_name=sample_name_subset(wildcards.treat)
+        )
+    }
+
+
+def featurecounts_input(wildcards):
+    input_ = cntrl_vs_treat_names(
+        wildcards,
+        'aligned_data/{sample_name}.sorted.bam',
+        suffix='_bams'
+    )
+    input_['gtf'] = f'differential_expression/dexseq/{wildcards.treat}_vs_{wildcards.cntrl}.expressed_regions.gtf'
+    return input_
+
+
+rule quantify_expressed_regions:
+    input:
+        unpack(featurecounts_input)
+    output:
+        'quantification/dexseq/{treat}_vs_{cntrl}.counts.tsv'
+    threads: 20
+    conda:
+        'env_yamls/featurecounts.yaml'
+    shell:
+        '''
+        featureCounts -T {threads} \
+          -f -s 2 -O --primary -p -B -C \
+          -a {input.gtf} \
+          -o {output} \
+          -t "expressed_region" \
+          -g "gene_id" \
+          {input.cntrl_bams} {input.treat_bams}
+        '''

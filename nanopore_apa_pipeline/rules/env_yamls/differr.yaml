@@ -1,0 +1,14 @@
+name: differr
+channels:
+ - conda-forge
+dependencies:
+ - python=3.6
+ - numpy
+ - scipy
+ - pandas
+ - statsmodels
+ - click
+ - joblib
+ - pysam
+ - pip:
+   - git+git://github.com/bartongroup/differr_nanopore_DRS.git

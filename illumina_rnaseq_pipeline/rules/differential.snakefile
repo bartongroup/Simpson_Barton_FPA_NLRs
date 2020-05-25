@@ -45,7 +45,7 @@ rule run_edgeR:
         '''
 
 
-def derfinder_input(wildcards):
+def expressed_regions_input(wildcards):
     fwd = cntrl_vs_treat_names(
         wildcards,
         'coverage_tracks/{sample_name}.fwd.bw',
@@ -60,25 +60,47 @@ def derfinder_input(wildcards):
     return fwd
 
 
-rule run_derfinder:
+def get_bw_flags(wildcards, input):
+    cntrl = [','.join([i, i.replace('fwd', 'rev')]) for i in input.cntrl_fwd]
+    cntrl = ' '.join(['-c {}'.format(i) for i in cntrl])
+    treat = [','.join([i, i.replace('fwd', 'rev')]) for i in input.treat_fwd]
+    treat = ' '.join(['-t {}'.format(i) for i in treat])
+    return {'cntrl': cntrl, 'treat': treat}
+
+
+rule get_expressed_regions:
     input:
-        unpack(derfinder_input)
+        unpack(expressed_regions_input),
+        gtf=nanopore('assembly/merged_nanopore_assembly.gtf')
     output:
-        tsv='differential_expression/derfinder/{treat}_vs_{cntrl}.tsv'
+        gtf='differential_expression/dexseq/{treat}_vs_{cntrl}.expressed_regions.gtf'
     params:
-        read_length=150,
-        cntrl_fwd=lambda wc, input: ' '.join(['-cf {}'.format(i) for i in input.cntrl_fwd]),
-        cntrl_rev=lambda wc, input: ' '.join(['-cr {}'.format(i) for i in input.cntrl_rev]),
-        treat_fwd=lambda wc, input: ' '.join(['-tf {}'.format(i) for i in input.treat_fwd]),
-        treat_rev=lambda wc, input: ' '.join(['-tr {}'.format(i) for i in input.treat_rev]),
+        bigwigs=get_bw_flags
     conda:
-        'env_yamls/rpy2_derfinder.yaml'
+        'env_yamls/expressed_regions.yaml'
     shell:
         '''
-        python ../scripts/run_derfinder.py -l {params.read_length} \
-          {params.cntrl_fwd} {params.cntrl_rev} \
-          {params.treat_fwd} {params.treat_rev} \
-          -cn {wildcards.cntrl} \
-          -tn {wildcards.treat} \
+        python ../scripts/get_expressed_regions.py \
+          {params.bigwigs[cntrl]} \
+          {params.bigwigs[treat]} \
+          -g {input.gtf} \
+          -o {output.gtf}
+        '''
+
+
+rule run_dexseq:
+    input:
+        'quantification/dexseq/{treat}_vs_{cntrl}.counts.tsv'
+    output:
+        tsv='differential_expression/dexseq/{treat}_vs_{cntrl}.tsv'
+    conda:
+        'env_yamls/rpy2_dexseq.yaml'
+    threads: 12
+    shell:
+        '''
+        python ../scripts/run_DEXSeq.py -p {threads} \
+          -f {input} \
+          -c {wildcards.cntrl} \
+          -t {wildcards.treat} \
           -o {output.tsv}
         '''

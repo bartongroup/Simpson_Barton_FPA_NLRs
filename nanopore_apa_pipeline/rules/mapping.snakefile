@@ -26,7 +26,7 @@ rule map_with_minimap2:
         'env_yamls/minimap2.yaml'
     shell:
         '''
-        ../../scripts/minimap2/minimap2 -t {threads} \
+        ../scripts/minimap2/minimap2 -t {threads} \
           -a -L --cs=short \
           -k15 -w5 --splice \
           -g2000 -G{params.intron_size} \

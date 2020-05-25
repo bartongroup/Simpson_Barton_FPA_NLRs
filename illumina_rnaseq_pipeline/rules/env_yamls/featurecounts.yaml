@@ -1,0 +1,6 @@
+name: subread
+channels:
+ - conda-forge
+ - bioconda
+dependencies:
+ - subread

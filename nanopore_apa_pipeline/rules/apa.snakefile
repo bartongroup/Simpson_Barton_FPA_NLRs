@@ -39,7 +39,7 @@ def d3pendr_input(wildcards):
 rule run_d3pendr:
     input:
         unpack(d3pendr_input),
-        gtf=config['gtf_fn'],
+        gtf='assembly/merged_nanopore_assembly.gtf',
     output:
         'apa_results/{treat}_vs_{cntrl}.apa_results.bed'
     params:
@@ -63,6 +63,7 @@ rule run_d3pendr:
           -a {input.gtf} \
           -o {params.output_prefix} \
           -p {threads} \
+          --use-locus-tag \
           --bootstraps {params.bootstraps} \
           --min-read-overlap {params.min_read_overlap} \
           {params.use_model} {params.test_hom}

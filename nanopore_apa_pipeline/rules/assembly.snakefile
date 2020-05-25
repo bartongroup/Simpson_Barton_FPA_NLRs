@@ -2,6 +2,11 @@ def merged_stringtie_input(wildcards):
     sample_names = glob_wildcards(
         basecalling('basecalled_data/{sample_name}.dna.fastq')
     ).sample_name
+    assembly_conds = config['assembly_conds']
+    sample_names = [
+       sn for sn in sample_names
+       if sn.rsplit('_', 1)[0] in assembly_conds
+    ]
     return {
         'bams': expand(
             'aligned_data/{sample_name}.filtered.bam',

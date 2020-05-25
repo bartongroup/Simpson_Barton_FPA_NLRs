@@ -11,6 +11,7 @@ subworkflow basecalling:
 include: '../rules/mapping.snakefile'
 include: '../rules/apa.snakefile'
 include: '../rules/assembly.snakefile'
+include: '../rules/modifications.snakefile'
 
 def get_all_conds(comps):
     all_conds = set()
@@ -23,7 +24,8 @@ def get_all_conds(comps):
 rule all:
     input:
         expand(
-            'apa_results/{comp}.apa_results.bed',
+            ['apa_results/{comp}.apa_results.bed',
+             'modifications/{comp}.der_sites_thresholded.bed'],
             comp=config['comparisons'],
         ),
         expand(
