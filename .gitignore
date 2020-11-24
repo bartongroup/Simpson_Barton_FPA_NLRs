@@ -1,8 +1,6 @@
 # pipeline directories
 raw_data
 raw_data/
-annotations/
-annotation/
 aligned_data/
 coverage_tracks/
 apa_results/
@@ -19,8 +17,12 @@ sequencing_summaries/
 
 # annotation and files
 *.bed
+*.bt2
+*.bed.gz
+*.bed.gz.tbi
 *.gtf
 *.gtf.gz
+*.gtf.gz.tbi
 *.fa
 *.fa.fai
 *.fasta
