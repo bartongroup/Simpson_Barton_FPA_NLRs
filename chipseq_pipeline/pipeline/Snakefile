@@ -1,0 +1,14 @@
+configfile: '../config.yml'
+
+include: "../rules/qc.snakefile"
+include: "../rules/mapping.snakefile"
+
+SAMPLE_NAMES = glob_wildcards('raw_data/{sample_name,\w+}{is_paired,(\.1)?}.fastq.gz').sample_name
+
+rule all:
+    input:
+        'qc/multiqc_report.html',
+        expand(
+             'coverage_tracks/{sample_name}.bw',
+             sample_name=SAMPLE_NAMES
+        )

@@ -12,7 +12,7 @@ rule run_maxquant:
         xml='mqvar.xml'
     output:
         evi='maxquant_output/combined/txt/evidence.txt'
-    threads: 28
+    threads: config.get('threads', 28)
     conda:
         'env_yamls/maxquant.yaml'
     shell:

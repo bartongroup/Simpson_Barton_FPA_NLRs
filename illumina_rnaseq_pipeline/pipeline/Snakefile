@@ -22,11 +22,11 @@ rule all:
         ),
         expand(
             'differential_expression/{de_method}/{comparison}.tsv',
-            de_method=['dexseq', 'edgeR'],
+            de_method=['dexseq_er_counts', 'dexseq_junc_counts', 'edgeR'],
             comparison=config['comparisons']
         ),
         expand(
-            'coverage_tracks/{sample_name}.cpm.{strand}.bw',
+            'coverage_tracks/pooled/{sample_name}.cpm.{strand}.bw',
             sample_name=glob_wildcards('raw_data/{sample_name}_{rep}.1.fastq.gz').sample_name,
             strand=['fwd', 'rev']
         )

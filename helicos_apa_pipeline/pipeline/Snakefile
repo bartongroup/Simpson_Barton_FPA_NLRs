@@ -12,9 +12,23 @@ include: '../rules/data_cleaning.snakefile'
 include: '../rules/apa.snakefile'
 
 
+def get_all_conds(comps):
+    all_conds = set()
+    for comp in comps:
+        treat, cntrl = comp.split('_vs_')
+        all_conds.add(treat)
+        all_conds.add(cntrl)
+    return all_conds
+
+
 rule all:
     input:
         expand(
             'apa_results/{comp}.apa_results.bed',
             comp=config['comparisons']
+        ),
+        expand(
+            'coverage_tracks/{cond}.cpm.{strand}.bw',
+            cond=get_all_conds(config['comparisons']),
+            strand=['fwd', 'rev']
         )

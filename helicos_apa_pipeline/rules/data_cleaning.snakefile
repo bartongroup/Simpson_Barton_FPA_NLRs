@@ -62,3 +62,39 @@ rule filter_indels:
         samtools view -bS - > {output.bam}
         samtools index {output.bam}
         '''
+
+
+def sample_name_subset(cond):
+    sample_names = glob_wildcards(
+        'aligned_data/{sample_name}.bam'
+    ).sample_name
+    cond_sample_names = [sn for sn in sample_names if sn.startswith(cond)]
+    return cond_sample_names
+
+
+rule normalised_genome_coverage:
+    input:
+        bams=lambda wc: expand(
+            'aligned_data/{sample_name}.filtered.bam',
+            sample_name=sample_name_subset(wc.cond),
+            strand=wc.strand,
+        )
+    output:
+        bw='coverage_tracks/{cond}.cpm.{strand}.bw'
+    params:
+        strand=lambda wc: 'reverse' if wc.strand == 'rev' else 'forward'
+    conda:
+        'env_yamls/deeptools.yaml'
+    threads: 12
+    shell:
+        '''
+        samtools merge -f -@ {threads} {output.bw}.tmp.bam {input.bams}
+        samtools index {output.bw}.tmp.bam
+        bamCoverage --normalizeUsing CPM --binSize=1 \
+          --filterRNAstrand {params.strand} \
+          -p {threads} \
+          --Offset 1 \
+          -b {output.bw}.tmp.bam \
+          -o {output.bw}
+        rm {output.bw}.tmp.bam*
+        '''

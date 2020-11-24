@@ -30,6 +30,7 @@ rule map_with_minimap2:
           -a -L --cs=short \
           -k15 -w5 --splice \
           -g2000 -G{params.intron_size} \
+          --end-seed-pen 12 \
           -A1 -B2 -O2,32 -E1,0 -C9 \
           -z200 -uf --splice-flank=yes \
           --junc-bonus={params.junc_bonus} --junc-bed {input.introns} \

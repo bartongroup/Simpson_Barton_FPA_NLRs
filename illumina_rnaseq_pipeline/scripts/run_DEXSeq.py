@@ -42,7 +42,7 @@ def get_sample_ids(conds, reps):
 
 def read_featurecounts_output(counts_fn):
     counts = pd.read_csv(
-        counts_fn, sep='\t', skiprows=1,
+        counts_fn, sep='\t', comment='#',
         dtype={'Chr': str}
     )
     gene_id = counts.Geneid

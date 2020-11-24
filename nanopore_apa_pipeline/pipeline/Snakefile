@@ -11,7 +11,7 @@ subworkflow basecalling:
 include: '../rules/mapping.snakefile'
 include: '../rules/apa.snakefile'
 include: '../rules/assembly.snakefile'
-include: '../rules/modifications.snakefile'
+include: '../rules/polya.snakefile'
 
 def get_all_conds(comps):
     all_conds = set()
@@ -24,12 +24,15 @@ def get_all_conds(comps):
 rule all:
     input:
         expand(
-            ['apa_results/{comp}.apa_results.bed',
-             'modifications/{comp}.der_sites_thresholded.bed'],
+            ['apa_results/{comp}.apa_results.bed'],
             comp=config['comparisons'],
         ),
         expand(
             'aligned_data/pooled/{cond}.bam',
             cond=get_all_conds(config['comparisons'])
+        ),
+        expand(
+            'polya_tails/{sample_name}.polya_tail_lengths.tsv.gz',
+            sample_name=glob_wildcards(basecalling('raw_data/{sample_name}/')).sample_name
         ),
         'assembly/merged_nanopore_assembly.gtf'

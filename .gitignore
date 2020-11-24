@@ -1,6 +1,8 @@
 # pipeline directories
 raw_data
 raw_data/
+annotations/
+annotation/
 aligned_data/
 coverage_tracks/
 apa_results/

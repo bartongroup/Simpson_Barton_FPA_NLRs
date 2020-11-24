@@ -1,18 +1,19 @@
-def sample_name_subset(cond):
-    sample_names = glob_wildcards(
-        'raw_data/{sample_name}.1.fastq.gz'
-    ).sample_name
+def sample_name_subset(cond, raw_data_template='raw_data/{sample_name}.1.fastq.gz'):
+    sample_names = glob_wildcards(raw_data_template).sample_name
     cond_sample_names = [sn for sn in sample_names if sn.startswith(cond)]
     return cond_sample_names
 
 
-def cntrl_vs_treat_names(wildcards, file_template, suffix=''):
+def cntrl_vs_treat_names(wildcards, file_template, suffix='',
+                         raw_data_template='raw_data/{sample_name}.1.fastq.gz'):
     return {
         f'cntrl{suffix}': expand(
-             file_template, sample_name=sample_name_subset(wildcards.cntrl)
+            file_template,
+            sample_name=sample_name_subset(wildcards.cntrl, raw_data_template)
         ),
         f'treat{suffix}': expand(
-             file_template, sample_name=sample_name_subset(wildcards.treat)
+            file_template,
+            sample_name=sample_name_subset(wildcards.treat, raw_data_template)
         )
     }
 
@@ -90,9 +91,9 @@ rule get_expressed_regions:
 
 rule run_dexseq:
     input:
-        'quantification/dexseq/{treat}_vs_{cntrl}.counts.tsv'
+        'quantification/dexseq/{treat}_vs_{cntrl}.{count_type}.tsv'
     output:
-        tsv='differential_expression/dexseq/{treat}_vs_{cntrl}.tsv'
+        tsv='differential_expression/dexseq_{count_type}/{treat}_vs_{cntrl}.tsv'
     conda:
         'env_yamls/rpy2_dexseq.yaml'
     threads: 12

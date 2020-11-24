@@ -4,7 +4,6 @@
 comparisons: 
   - fpa8_vs_col0
   - 35SFPA_vs_col0
-  - vir1_vs_VIRc
 
 # conds to use for merged assembly
 assembly_conds:

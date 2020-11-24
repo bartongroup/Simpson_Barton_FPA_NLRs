@@ -1,5 +1,6 @@
 fasta_fn: ../../annotations/Araport11_genes.201606.pep.repr.fasta
-comparison: FPA_vs_col0
+comparisons:
+  - FPA_vs_col0
 nboots: 9999
 
 sample_fns:

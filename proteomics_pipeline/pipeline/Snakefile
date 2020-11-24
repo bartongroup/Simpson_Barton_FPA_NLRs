@@ -3,4 +3,7 @@ include: '../rules/maxquant.snakefile'
 
 rule all:
     input:
-        'proteus_output/{comp}.tsv'.format(comp=config['comparison'])
+        expand(
+            'proteus_output/{comp}.tsv',
+            comp=config['comparisons'],
+        )

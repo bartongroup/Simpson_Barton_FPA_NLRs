@@ -124,7 +124,7 @@ rule normalised_genome_coverage:
             strand=wc.strand,
         )
     output:
-        bw='coverage_tracks/{cond}.cpm.{strand}.bw'
+        bw='coverage_tracks/pooled/{cond}.cpm.{strand}.bw'
     conda:
         'env_yamls/deeptools.yaml'
     threads: 12
@@ -132,9 +132,8 @@ rule normalised_genome_coverage:
         '''
         samtools merge -f -@ {threads} {output.bw}.tmp.bam {input.bams}
         samtools index {output.bw}.tmp.bam
-        bamCoverage --normalizeUsing CPM -p {threads} \
-          --minMappingQuality 5 \
+        bamCoverage --normalizeUsing CPM --binSize=1 -p {threads} \
           -b {output.bw}.tmp.bam \
           -o {output.bw}
-        rm {output.bw}.tmp.bam
+        rm {output.bw}.tmp.bam*
         '''

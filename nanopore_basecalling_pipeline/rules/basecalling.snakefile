@@ -68,6 +68,29 @@ rule rna_to_dna:
         "cat {input} | seqkit seq --rna2dna > {output}"
 
 
+rule nanopolish_index:
+    input:
+        fastq='basecalled_data/{sample_name}.dna.fastq',
+        fast5='raw_data/{sample_name}',
+        seq_summary='sequencing_summaries/{sample_name}_sequencing_summary.txt'
+    output:
+        "basecalled_data/{sample_name}.dna.fastq.index",
+        "basecalled_data/{sample_name}.dna.fastq.index.fai",
+        "basecalled_data/{sample_name}.dna.fastq.index.gzi",
+        "basecalled_data/{sample_name}.dna.fastq.index.readdb"
+    conda:
+        'env_yamls/nanopolish.yaml'
+    resources:
+        job_class='long',
+    shell:
+        '''
+        nanopolish index \
+        -s {input.seq_summary} \
+        -d {input.fast5} \
+        {input.fastq}
+        '''
+
+
 rule rename_sequencing_summary:
     input:
         "basecalling/{sample_name}/{sample_name}.complete"

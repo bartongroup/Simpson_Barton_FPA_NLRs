@@ -68,7 +68,7 @@ rule quantify_expressed_regions:
     input:
         unpack(featurecounts_input)
     output:
-        'quantification/dexseq/{treat}_vs_{cntrl}.counts.tsv'
+        'quantification/dexseq/{treat}_vs_{cntrl}.er_counts.tsv'
     threads: 20
     conda:
         'env_yamls/featurecounts.yaml'
@@ -81,4 +81,37 @@ rule quantify_expressed_regions:
           -t "expressed_region" \
           -g "gene_id" \
           {input.cntrl_bams} {input.treat_bams}
+        '''
+
+
+def junction_counts_input(wildcards):
+    input_ = cntrl_vs_treat_names(
+        wildcards,
+        'aligned_data/{sample_name}.sorted.bam',
+        suffix='_bams'
+    )
+    input_['gtf'] = nanopore('assembly/merged_nanopore_assembly.gtf')
+    return input_
+
+
+def get_bam_flags(wildcards, input):
+    bams = ' '.join(['-b {}'.format(i) for i in input.cntrl_bams]) + ' ' + \
+           ' '.join(['-b {}'.format(i) for i in input.treat_bams])
+    return bams
+
+
+rule quantify_junction_counts:
+    input:
+        unpack(junction_counts_input)
+    output:
+        'quantification/dexseq/{treat}_vs_{cntrl}.junc_counts.tsv'
+    threads: 1
+    params:
+        bam_flags=get_bam_flags
+    conda:
+        'env_yamls/expressed_regions.yaml'
+    shell:
+        '''
+        python ../scripts/get_junction_counts.py \
+          {params.bam_flags} -g {input.gtf} -o {output}
         '''

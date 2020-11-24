@@ -7,12 +7,14 @@ include: '../rules/basecalling.snakefile'
 
 INPUT_BASEDIRS = [fn for fn in glob('raw_data/*') if os.path.isdir(fn)]
 SAMPLE_NAMES = [os.path.split(fn)[1] for fn in INPUT_BASEDIRS]
+SAMPLE_NAMES = [sn for sn in SAMPLE_NAMES if not sn.lower().startswith('v')]
 
 
 rule all:
     input:
         expand(
             ['basecalled_data/{sample_name}.dna.fastq',
+             "basecalled_data/{sample_name}.dna.fastq.index.readdb",
              'sequencing_summaries/{sample_name}_sequencing_summary.txt'],
             sample_name=SAMPLE_NAMES
         )

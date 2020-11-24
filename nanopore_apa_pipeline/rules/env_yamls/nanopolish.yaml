@@ -1,0 +1,5 @@
+name: nanopolish
+channels:
+ - bioconda
+dependencies:
+ - nanopolish=0.11.3
